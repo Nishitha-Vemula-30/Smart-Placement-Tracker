@@ -1,8 +1,46 @@
-import express from "express"
-import { registerStudent } from "../Controllers/studentController.js"
+import express from "express";
 
-const router = express.Router()
-router.get("/students",)
-router.post("/register", registerStudent)
+import {
 
-export default router
+  registerStudent,
+  loginStudent,
+  logoutStudent,
+  getCurrentUser,
+  getStudents
+
+} from "../Controllers/studentController.js";
+
+import authMiddleware from "../Middleware/authMiddleware.js";
+import adminMiddleware from "../Middleware/adminMiddleware.js";
+
+const router = express.Router();
+
+router.post(
+  "/register",
+  registerStudent
+);
+
+router.post(
+  "/login",
+  loginStudent
+);
+
+router.post(
+  "/logout",
+  logoutStudent
+);
+
+router.get(
+  "/me",
+  authMiddleware,
+  getCurrentUser
+);
+
+router.get(
+  "/all",
+  authMiddleware,
+  adminMiddleware,
+  getStudents
+);
+
+export default router;

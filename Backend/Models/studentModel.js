@@ -1,31 +1,48 @@
-import {Schema,model} from "mongoose"
+import mongoose from "mongoose"
 
-const studentSchema = new Schema({
+const studentSchema = new mongoose.Schema(
+
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
 
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true
     },
 
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
 
     branch: {
-        type: String
+      type: String
     },
 
     cgpa: {
-        type: Number
-    }
-})
+      type: Number
+    },
 
-const Student = model("Student", studentSchema)
+    role: {
+    type: String,
+    enum: ["admin", "student"],
+    default: "student"
+  }
+  },
+
+  {
+    timestamps: true
+  }
+
+)
+
+const Student = mongoose.models.Student || mongoose.model(
+  "Student",
+  studentSchema
+)
 
 export default Student

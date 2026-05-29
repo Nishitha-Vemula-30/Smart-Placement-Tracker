@@ -2,15 +2,29 @@ import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import studentRoutes from "./Routes/studentRoute.js"
-
+import applicationRoutes from "./Routes/applicationRoutes.js"
+import companyRoutes from "./Routes/companyRoutes.js"
+import notificationRoutes from "./Routes/notificationRoute.js"
+import authRoutes from "./Routes/authRoutes.js"
 dotenv.config()
 const app = express()
 
-app.use(cors())
+app.use(cors({
+
+    origin: "http://localhost:5173",
+
+    credentials: true
+
+  }))
+app.use(cookieParser())
 app.use(express.json())
 app.use("/api/students", studentRoutes)
-
+app.use("/api/application", applicationRoutes)
+app.use("/api/company", companyRoutes)
+app.use("/api/notifications", notificationRoutes)
+app.use("/api/auth", authRoutes)
 //connect to db
 const connectDB=async()=>{
     try{
@@ -31,10 +45,6 @@ connectDB()
 app.use((req,res,next)=>{
    console.log(req.url)  //path is present in urlpath
    res.json({message:` ${req.url} is Invalid path`})
-})
-app.use((err,req,res,next)=>{
-     console.log("err:",err)
-     res.json({message:"error",reason:err.message})
 })
 
 app.use((err, req, res, next) => {
