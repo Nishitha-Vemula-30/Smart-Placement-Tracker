@@ -11,11 +11,9 @@ import authRoutes from "./Routes/authRoutes.js"
 dotenv.config()
 const app = express()
 
-const cors = require("cors");
-
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://smart-placement-tracker-project.vercel.app/",
+  "https://smart-placement-tracker-project.vercel.app",
 ];
 
 app.use(
@@ -89,7 +87,7 @@ app.use((err, req, res, next) => {
     const value = keyValue[field];
     return res.status(409).json({
       message: "error occurred",
-      error: "${field} ${value} already exists",
+      error: `${field} ${value} already exists`,
     });
   }
 
