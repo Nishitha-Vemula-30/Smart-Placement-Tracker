@@ -11,13 +11,25 @@ import authRoutes from "./Routes/authRoutes.js"
 dotenv.config()
 const app = express()
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://smart-placement-tracker-eight.vercel.app"
-  ],
-  credentials: true
-}));
+const cors = require("cors");
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://smart-placement-tracker-project.vercel.app/",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(cookieParser())
 app.use(express.json())
 app.use("/api/students", studentRoutes)
