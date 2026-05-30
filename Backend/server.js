@@ -14,6 +14,7 @@ const app = express()
 const allowedOrigins = [
   "http://localhost:5173",
   "https://smart-placement-tracker-project.vercel.app",
+  "https://smart-placement-tracker-fullstack.onrender.com"
 ];
 
 app.use(
