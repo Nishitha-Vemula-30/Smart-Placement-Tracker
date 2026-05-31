@@ -64,10 +64,6 @@ const Home = () => {
                 Get Started
               </button>
 
-              <button className="border border-gray-500 hover:border-blue-400 hover:bg-blue-500/10 transition-all duration-300 px-8 py-3 rounded-xl font-semibold">
-                Learn More
-              </button>
-
             </div>
 
             {/* Stats */}
