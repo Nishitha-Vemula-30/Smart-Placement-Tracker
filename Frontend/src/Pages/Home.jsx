@@ -40,10 +40,6 @@ const Home = () => {
           {/* Left Content */}
           <div>
 
-            <div className="inline-block px-4 py-2 bg-blue-500/20 border border-blue-400/30 rounded-full text-blue-300 text-sm font-semibold mb-6">
-              Smart MERN Stack Project
-            </div>
-
             <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
               Smart
               <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
@@ -222,7 +218,7 @@ const Home = () => {
 
       {/* Footer */}
       <div className="border-t border-white/10 py-8 text-center text-gray-400">
-        © 2026 Smart Placement Tracker | MERN Stack Project
+         2026 Smart Placement Tracker 
       </div>
 
     </div>
