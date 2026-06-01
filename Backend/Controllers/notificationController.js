@@ -1,10 +1,12 @@
 import Notification from "../Models/notificationModel.js";
 
 // SEND NOTIFICATION
+// Create a notification for a single student or broadcast to all students.
 export const sendNotification = async (req, res) => {
   try {
     const { studentId, message } = req.body;
 
+    // If studentId is "all" or missing, create a broadcast notification.
     const targetStudentId = (studentId === "all" || !studentId) ? null : studentId;
 
     const notification = await Notification.create({
@@ -19,6 +21,7 @@ export const sendNotification = async (req, res) => {
 };
 
 // GET NOTIFICATIONS
+// Admins get all notifications; students get their own plus global broadcasts.
 export const getNotifications = async (req, res) => {
   try {
     const query = req.user.role === "admin"

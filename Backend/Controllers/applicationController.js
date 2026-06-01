@@ -2,12 +2,13 @@ import Application from "../Models/applicationModel.js";
 import Student from "../Models/studentModel.js";
 import Company from "../Models/companyModel.js";
 import Notification from "../Models/notificationModel.js";
-import { sendEmail } from "../Utils/sendEmail.js";
 
+// APPLY TO COMPANY
+// Handle student application submission for a company drive.
+// Only students can apply and only if they meet eligibility rules.
 export const applyCompany = async (req, res) => {
-
   try {
-
+    // Admins are not allowed to apply.
     if (req.user.role === "admin") {
       return res.status(403).json({
         message: "Admins cannot apply for companies"
@@ -36,7 +37,7 @@ export const applyCompany = async (req, res) => {
       });
     }
 
-    // Eligibility check: CGPA and Branch
+    // Check CGPA and branch eligibility.
     const isCgpaEligible = student.cgpa >= company.minimumCGPA;
     const isBranchEligible =
       company.eligibleBranches.length === 0 ||
@@ -48,6 +49,7 @@ export const applyCompany = async (req, res) => {
       });
     }
 
+    // Prevent duplicate applications for the same student and company.
     const existingApplication = await Application.findOne({
       student: req.user.id,
       company: companyId
@@ -65,41 +67,33 @@ export const applyCompany = async (req, res) => {
     });
 
     res.status(201).json(application);
-
   } catch (error) {
-
     res.status(500).json({
       message: error.message
     });
-
   }
-
 };
 
+// GET ALL APPLICATIONS
+// Return every application in the system with student and company details.
 export const getApplications = async (req, res) => {
-
   try {
-
     const applications = await Application.find()
       .populate("student")
       .populate("company");
 
     res.status(200).json(applications);
-
   } catch (error) {
-
     res.status(500).json({
       message: error.message
     });
-
   }
-
 };
 
+// GET MY APPLICATIONS
+// Return only the applications of the currently logged-in student.
 export const getMyApplications = async (req, res) => {
-
   try {
-
     const applications = await Application.find({
       student: req.user.id
     })
@@ -107,21 +101,17 @@ export const getMyApplications = async (req, res) => {
       .sort({ appliedDate: -1 });
 
     res.status(200).json(applications);
-
   } catch (error) {
-
     res.status(500).json({
       message: error.message
     });
-
   }
-
 };
 
+// UPDATE STATUS
+// Change an application's status and notify the student about the update.
 export const updateStatus = async (req, res) => {
-
   try {
-
     const application = await Application.findById(req.params.id);
 
     if (!application) {
@@ -131,10 +121,9 @@ export const updateStatus = async (req, res) => {
     }
 
     application.status = req.body.status;
-
     await application.save();
 
-    // Populate to get student and company details for notification/email
+    // Populate student and company details to generate the notification message.
     const populatedApp = await Application.findById(application._id)
       .populate("student")
       .populate("company");
@@ -142,7 +131,6 @@ export const updateStatus = async (req, res) => {
     if (populatedApp && populatedApp.student && populatedApp.company) {
       const msg = `Your application status for ${populatedApp.company.companyName} has been updated to "${req.body.status}".`;
 
-      // Create Database Notification
       await Notification.create({
         studentId: populatedApp.student._id,
         message: msg
@@ -150,13 +138,9 @@ export const updateStatus = async (req, res) => {
     }
 
     res.status(200).json(application);
-
   } catch (error) {
-
     res.status(500).json({
       message: error.message
     });
-
   }
-
 };

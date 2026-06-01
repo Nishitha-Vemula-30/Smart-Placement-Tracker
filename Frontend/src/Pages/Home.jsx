@@ -214,7 +214,7 @@ const Home = () => {
 
       {/* Footer */}
       <div className="border-t border-white/10 py-8 text-center text-gray-400">
-         2026 Smart Placement Tracker 
+         Smart Placement Tracker 
       </div>
 
     </div>

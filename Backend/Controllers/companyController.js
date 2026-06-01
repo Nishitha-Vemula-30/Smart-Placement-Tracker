@@ -2,40 +2,21 @@ import Company from "../Models/companyModel.js";
 import Student from "../Models/studentModel.js";
 import Notification from "../Models/notificationModel.js";
 import Application from "../Models/applicationModel.js";
-import { sendEmail } from "../Utils/sendEmail.js";
 
-// CREATE COMPANY & AUTOMATICALLY NOTIFY ELIGIBLE STUDENTS
+// COMPANY CONTROLLER
+// Handles company CRUD operations and creates notifications when a new company drive is added.
+
+// CREATE COMPANY & BROADCAST NOTIFICATION
 export const addCompany = async (req, res) => {
   try {
     const company = await Company.create(req.body);
 
-    // Fetch all registered students
-    const students = await Student.find({ role: "student" });
-
-    // Filter eligible students
-    const eligibleStudents = students.filter((student) => {
-      const meetsCgpa = student.cgpa !== undefined && student.cgpa !== null
-        ? Number(student.cgpa) >= Number(company.minimumCGPA)
-        : false;
-
-      const meetsBranch =
-        !company.eligibleBranches ||
-        company.eligibleBranches.length === 0 ||
-        (student.branch && company.eligibleBranches.includes(student.branch));
-
-      return meetsCgpa && meetsBranch;
+    // Broadcast a single notification for all students.
+    // studentId null means this is a global notification.
+    await Notification.create({
+      studentId: null,
+      message: `${company.companyName} company drive started for ${company.role}`,
     });
-
-    // Create notifications for eligible students in-app
-    await Promise.all(
-      eligibleStudents.map(async (student) => {
-        // Database Notification
-        await Notification.create({
-          studentId: student._id,
-          message: `${company.companyName} company drive started for ${company.role}`,
-        });
-      })
-    );
 
     res.status(201).json(company);
   } catch (error) {
@@ -44,6 +25,7 @@ export const addCompany = async (req, res) => {
 };
 
 // GET ALL COMPANIES
+// Return every company sorted with the newest first.
 export const getCompanies = async (req, res) => {
   try {
     const companies = await Company.find().sort({ createdAt: -1 });
@@ -54,6 +36,7 @@ export const getCompanies = async (req, res) => {
 };
 
 // UPDATE COMPANY DETAILS
+// Update company information by ID.
 export const updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,7 +55,8 @@ export const updateCompany = async (req, res) => {
   }
 };
 
-// DELETE COMPANY & ALL CORRESPONDING APPLICATIONS
+// DELETE COMPANY & ASSOCIATED APPLICATIONS
+// Remove a company and all applications linked to it.
 export const deleteCompany = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,7 +66,6 @@ export const deleteCompany = async (req, res) => {
       return res.status(404).json({ message: "Company not found" });
     }
 
-    // Delete company and associated applications
     await Company.findByIdAndDelete(id);
     await Application.deleteMany({ company: id });
 
@@ -92,7 +75,8 @@ export const deleteCompany = async (req, res) => {
   }
 };
 
-// ELIGIBLE COMPANIES
+// GET ELIGIBLE COMPANIES
+// Return companies that the current student can apply to based on CGPA and branch.
 export const getEligibleCompanies = async (req, res) => {
   try {
     const student = await Student.findById(req.user.id);

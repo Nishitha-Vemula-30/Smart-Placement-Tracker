@@ -7,14 +7,12 @@ import studentRoutes from "./Routes/studentRoute.js"
 import applicationRoutes from "./Routes/applicationRoutes.js"
 import companyRoutes from "./Routes/companyRoutes.js"
 import notificationRoutes from "./Routes/notificationRoute.js"
-import authRoutes from "./Routes/authRoutes.js"
 dotenv.config()
 const app = express()
 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://smart-placement-tracker-project.vercel.app",
-  "https://smart-placement-tracker-fullstack.onrender.com"
 ];
 
 app.use(
@@ -35,7 +33,6 @@ app.use("/api/students", studentRoutes)
 app.use("/api/application", applicationRoutes)
 app.use("/api/company", companyRoutes)
 app.use("/api/notifications", notificationRoutes)
-app.use("/api/auth", authRoutes)
 //connect to db
 const connectDB=async()=>{
     try{
