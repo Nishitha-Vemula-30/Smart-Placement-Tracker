@@ -36,7 +36,7 @@ export const registerStudent = async (req, res) => {
 
     // Only include student-specific fields for non-admin users.
     if (role !== "admin") {
-      userData.branch = branch;
+      userData.branch = branch ? branch.trim().toUpperCase() : branch;
       userData.cgpa = cgpa;
     }
 

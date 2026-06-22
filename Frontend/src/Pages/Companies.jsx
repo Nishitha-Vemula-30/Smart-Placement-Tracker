@@ -163,13 +163,18 @@ const Companies = ({ authUser }) => {
     if (userRole === "admin") return { eligible: true };
 
     const userCgpa = authUser?.cgpa !== undefined && authUser?.cgpa !== "" ? Number(authUser.cgpa) : null;
-    const userBranch = authUser?.branch || null;
+    const userBranch = authUser?.branch?.trim().toUpperCase() || null;
+    const normalizedEligibleBranches = company.eligibleBranches
+      ? company.eligibleBranches
+          .map((branch) => branch?.trim().toUpperCase())
+          .filter(Boolean)
+      : [];
 
     const meetsCgpa = userCgpa !== null ? userCgpa >= company.minimumCGPA : false;
     const meetsBranch =
       !company.eligibleBranches ||
       company.eligibleBranches.length === 0 ||
-      (userBranch && company.eligibleBranches.includes(userBranch));
+      (userBranch && normalizedEligibleBranches.includes(userBranch));
 
     const reasons = [];
     if (!meetsCgpa) reasons.push(`CGPA is ${userCgpa ?? "not provided"} (requires >= ${company.minimumCGPA})`);

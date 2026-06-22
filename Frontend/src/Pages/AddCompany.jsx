@@ -31,7 +31,10 @@ const AddCompany = () => {
         packageValue: formData.packageValue,
         minimumCGPA: Number(formData.minimumCGPA),
         eligibleBranches: formData.eligibleBranches
-          ? formData.eligibleBranches.split(",").map((branch) => branch.trim())
+          ? formData.eligibleBranches
+              .split(",")
+              .map((branch) => branch.trim().toUpperCase())
+              .filter(Boolean)
           : []
       };
 

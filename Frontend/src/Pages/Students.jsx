@@ -36,9 +36,13 @@ const Students = () => {
     getStudents()
   }, [])
 
-  // Collect unique branches present in student list dynamically
+  // Collect unique uppercase branches present in student list dynamically
   const uniqueBranches = Array.from(
-    new Set(students.map((student) => student.branch).filter(Boolean))
+    new Set(
+      students
+        .map((student) => student.branch?.trim().toUpperCase())
+        .filter(Boolean)
+    )
   ).sort();
 
   // Filter students based on search inputs
@@ -47,7 +51,9 @@ const Students = () => {
       student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.email.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesBranch = !branchFilter || student.branch === branchFilter;
+    const matchesBranch =
+      !branchFilter ||
+      (student.branch && student.branch.trim().toUpperCase() === branchFilter);
 
     const matchesCgpa =
       !minCgpa ||

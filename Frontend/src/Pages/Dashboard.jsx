@@ -102,12 +102,18 @@ const Dashboard = () => {
       const matchesSearch =
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.email.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBranch = branchFilter === "all" || s.branch === branchFilter;
+      const matchesBranch =
+        branchFilter === "all" ||
+        (s.branch && s.branch.trim().toUpperCase() === branchFilter);
       return matchesSearch && matchesBranch;
     });
 
-  // Extract unique branches for filter dropdown
-  const uniqueBranches = [...new Set(students.filter(s => s.role !== "admin" && s.branch).map(s => s.branch))];
+  // Extract unique uppercase branches for filter dropdown
+  const uniqueBranches = [...new Set(
+    students
+      .filter((s) => s.role !== "admin" && s.branch)
+      .map((s) => s.branch.trim().toUpperCase())
+  )].sort();
 
   if (loading) {
     return (

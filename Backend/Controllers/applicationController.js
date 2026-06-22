@@ -38,10 +38,12 @@ export const applyCompany = async (req, res) => {
     }
 
     // Check CGPA and branch eligibility.
+    const normalizedStudentBranch = student.branch?.trim().toUpperCase() || "";
+    const normalizedCompanyBranches = company.eligibleBranches.map((branch) => branch?.trim().toUpperCase());
     const isCgpaEligible = student.cgpa >= company.minimumCGPA;
     const isBranchEligible =
       company.eligibleBranches.length === 0 ||
-      company.eligibleBranches.includes(student.branch);
+      normalizedCompanyBranches.includes(normalizedStudentBranch);
 
     if (!isCgpaEligible || !isBranchEligible) {
       return res.status(400).json({

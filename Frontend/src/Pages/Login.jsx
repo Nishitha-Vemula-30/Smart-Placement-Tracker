@@ -13,6 +13,8 @@ const Login = ({ setAuthUser }) => {
 
   })
 
+  const [showPassword, setShowPassword] = useState(false)
+
   const handleChange = (e) => {
 
     setFormData({
@@ -119,20 +121,29 @@ const Login = ({ setAuthUser }) => {
 
           </div>
 
-          <div>
+          <div className="relative">
 
             <label className="text-gray-300 text-sm">
               Password
             </label>
 
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Enter your password"
-              className="w-full mt-2 p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 outline-none focus:border-blue-400"
+              className="w-full mt-2 pr-12 p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 outline-none focus:border-blue-400"
               onChange={handleChange}
               required
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? "🙈" : "🐵"}
+            </button>
 
           </div>
 

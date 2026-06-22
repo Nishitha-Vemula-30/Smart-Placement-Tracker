@@ -9,6 +9,12 @@ import Application from "../Models/applicationModel.js";
 // CREATE COMPANY & BROADCAST NOTIFICATION
 export const addCompany = async (req, res) => {
   try {
+    if (req.body.eligibleBranches && Array.isArray(req.body.eligibleBranches)) {
+      req.body.eligibleBranches = req.body.eligibleBranches
+        .map((branch) => branch?.trim().toUpperCase())
+        .filter(Boolean);
+    }
+
     const company = await Company.create(req.body);
 
     // Broadcast a single notification for all students.
@@ -40,7 +46,13 @@ export const getCompanies = async (req, res) => {
 export const updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedCompany = await Company.findByIdAndUpdate(id, req.body, {
+    const updateData = { ...req.body };
+    if (updateData.eligibleBranches && Array.isArray(updateData.eligibleBranches)) {
+      updateData.eligibleBranches = updateData.eligibleBranches
+        .map((branch) => branch?.trim().toUpperCase())
+        .filter(Boolean);
+    }
+    const updatedCompany = await Company.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
@@ -84,12 +96,16 @@ export const getEligibleCompanies = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
+    const studentBranch = student.branch ? student.branch.trim().toUpperCase() : "";
+    const escapedBranch = studentBranch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const branchRegex = studentBranch ? new RegExp(`^${escapedBranch}$`, "i") : null;
+
     const companies = await Company.find({
       minimumCGPA: { $lte: student.cgpa },
       $or: [
         { eligibleBranches: { $exists: false } },
         { eligibleBranches: { $size: 0 } },
-        { eligibleBranches: student.branch }
+        ...(branchRegex ? [{ eligibleBranches: { $in: [branchRegex] } }] : [])
       ]
     }).sort({ createdAt: -1 });
 

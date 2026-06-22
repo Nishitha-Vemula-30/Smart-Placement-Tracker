@@ -75,34 +75,13 @@ const Navbar = ({ authUser, setAuthUser }) => {
               Profile
             </Link>
 
-            <Link
-              to="/companies"
-              className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
-            >
-              Companies
-            </Link>
-
             {isAdmin ? (
               <>
-                <Link
-                  to="/add-company"
-                  className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
-                >
-                  Add Company
-                </Link>
-
                 <Link
                   to="/students"
                   className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
                 >
                   Students List
-                </Link>
-
-                <Link
-                  to="/admin-applications"
-                  className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
-                >
-                  Applications
                 </Link>
 
                 <Link
@@ -113,12 +92,21 @@ const Navbar = ({ authUser, setAuthUser }) => {
                 </Link>
               </>
             ) : (
-              <Link
-                to="/applications"
-                className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
-              >
-                My Applications
-              </Link>
+              <>
+                <Link
+                  to="/companies"
+                  className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
+                >
+                  Companies
+                </Link>
+
+                <Link
+                  to="/applications"
+                  className="text-slate-300 hover:text-white font-semibold transition-colors duration-200"
+                >
+                  My Applications
+                </Link>
+              </>
             )}
 
             <Link
